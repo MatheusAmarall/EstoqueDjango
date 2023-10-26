@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="d-flex justify-content-center mt-5">
+        <div class="card" style="width: 18rem;">
+            <img src="{{ product.picture.url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.category }} R${{ product.price }}</p>
+                <a href="{% url 'delete-product' product.id %}" class="btn btn-danger">Deletar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
