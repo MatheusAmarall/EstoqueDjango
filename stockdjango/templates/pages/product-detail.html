@@ -7,7 +7,17 @@
             <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.category }} R${{ product.price }}</p>
+                <p class="card-text">
+                    {% if product.qtd > 0 %}
+                        Em estoque: {{ product.qtd }} Produtos
+                    {% else %}
+                        Sem estoque
+                    {% endif %}
+                </p>
+                <p class="card-text">Desconto : {{ product.discount }}</p>
+                <p class="card-text">Detalhes : {{ product.description }}</p>
                 <a href="{% url 'delete-product' product.id %}" class="btn btn-danger">Deletar</a>
+                <a href="{% url 'sell-product' product.id %}" class="btn btn-secondary">Vender Unidade</a>
             </div>
         </div>
     </div>

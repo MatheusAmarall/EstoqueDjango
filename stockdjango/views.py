@@ -2,9 +2,18 @@ from django.shortcuts import render, redirect
 from .models import Products, Categories
 from random import randint
 from datetime import datetime 
+
 def index(request):    
-    produtos = Products.objects.all() 
-    
+    produtos = Products.objects.filter(in_stock=True)
+    return render(request, 'pages/index.html', {'produtos':produtos})
+
+def out_stock(request):    
+    produtos = Products.objects.filter(in_stock=False)
+    return render(request, 'pages/index.html', {'produtos':produtos})
+
+def search_product(request):
+    q = request.GET.get('q')
+    produtos = Products.objects.filter(name__icontains=q)
     return render(request, 'pages/index.html', {'produtos':produtos})
 
 def add_product(request):
@@ -19,7 +28,7 @@ def add_product(request):
         qtd = request.POST.get('qtd')
         discount = request.POST.get('discount')
         created_at = datetime.now()
-        in_stock = True
+        in_stock = int(request.POST.get('qtd')) > 0
 
         Products.objects.create(
             name=name,
@@ -47,3 +56,13 @@ def delete_product(request, id):
     product = Products.objects.get(id=id)
     product.delete()
     return redirect('home')
+
+def sell_product(request, id):
+    product = Products.objects.get(id=id)
+    product.qtd -= 1
+    
+    if product.qtd == 0:
+        product.in_stock = False
+    
+    product.save()
+    return redirect('product-detail', id)
