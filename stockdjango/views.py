@@ -3,11 +3,16 @@ from .models import Products, Categories
 from random import randint
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 
 @login_required(redirect_field_name='login')
 def index(request):
-    produtos = Products.objects.filter(in_stock=True)
+    produtos = Products.objects.filter(user_id=request.user.id)
     return render(request, 'pages/index.html', {'produtos':produtos})
+
+def user_logout(request):
+    auth.logout(request)
+    return redirect('login')
 
 def out_stock(request):    
     produtos = Products.objects.filter(in_stock=False)
@@ -33,6 +38,7 @@ def add_product(request):
         in_stock = int(request.POST.get('qtd')) > 0
 
         Products.objects.create(
+            user_id=request.user.id,
             name=name,
             cod=cod,
             category_id=category,
